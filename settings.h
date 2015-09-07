@@ -4,7 +4,7 @@
 #include <string>
 
 // CONFIGURATION HEADERS
-class ConfigurationFileTags{
+class SettingsFileTags{
 public:
     static const std::string _DB_PATH;
 };

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-const std::string ConfigurationFileTags::_DB_PATH = "DB_LOCATION=";
+const std::string SettingsFileTags::_DB_PATH = "DB_LOCATION=";
 
 const std::string Settings::_DB_FILE = load_db_location();
 std::string Settings::load_db_location()
@@ -32,9 +32,9 @@ std::string Settings::load_db_location()
     std::string line;
     while (std::getline(config_reader, line))
     {
-        if(line.find(ConfigurationFileTags::_DB_PATH) != std::string::npos)
+        if(line.find(SettingsFileTags::_DB_PATH) != std::string::npos)
         {
-            line.replace(0, ConfigurationFileTags::_DB_PATH.length(), "");
+            line.replace(0, SettingsFileTags::_DB_PATH.length(), "");
             if(file_exists(line))
             {
                 return line;
