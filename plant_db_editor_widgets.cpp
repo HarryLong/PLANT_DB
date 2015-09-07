@@ -244,10 +244,10 @@ void IlluminationPropertiesWidget::init_layout()
  * SOIL HUMIDITY PROPERTIES WIDGET *
  ***********************************/
 SoilHumidityPropertiesWidget::SoilHumidityPropertiesWidget(QWidget* parent, Qt::WindowFlags f) :
-    m_prime_humidity_start_sb(new MyPercentageSpinBox),
-    m_prime_humidity_end_sb(new MyPercentageSpinBox),
-    m_min_humidity_sb(new MyPercentageSpinBox),
-    m_max_humidity_sb(new MyPercentageSpinBox)
+    m_prime_humidity_start_sb(new MyHumiditySpinBox),
+    m_prime_humidity_end_sb(new MyHumiditySpinBox),
+    m_min_humidity_sb(new MyHumiditySpinBox),
+    m_max_humidity_sb(new MyHumiditySpinBox)
 {
     init_layout();
 }
@@ -290,7 +290,7 @@ void SoilHumidityPropertiesWidget::init_layout()
         QHBoxLayout * h_layout = new QHBoxLayout();
         h_layout->addWidget(new QLabel("Start of prime humidity: "),0,Qt::AlignLeft);
         h_layout->addWidget(m_prime_humidity_start_sb,0,Qt::AlignRight);
-        h_layout->addWidget(new QLabel("%"),0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel("mm"),0,Qt::AlignRight);
         main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
     }
     // End of prime
@@ -298,7 +298,7 @@ void SoilHumidityPropertiesWidget::init_layout()
         QHBoxLayout * h_layout = new QHBoxLayout();
         h_layout->addWidget(new QLabel("End of prime humidity: "),0,Qt::AlignLeft);
         h_layout->addWidget(m_prime_humidity_end_sb,0,Qt::AlignRight);
-        h_layout->addWidget(new QLabel("%"),0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel("mm"),0,Qt::AlignRight);
         main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
     }
     // Drought Sensitivity
@@ -306,7 +306,7 @@ void SoilHumidityPropertiesWidget::init_layout()
         QHBoxLayout * h_layout = new QHBoxLayout();
         h_layout->addWidget(new QLabel("Minimum humidity: "),0,Qt::AlignLeft);
         h_layout->addWidget(m_min_humidity_sb,0,Qt::AlignRight);
-        h_layout->addWidget(new QLabel("%"),0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel("mm"),0,Qt::AlignRight);
         main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
     }
     // Flood Sensitivity
@@ -314,7 +314,7 @@ void SoilHumidityPropertiesWidget::init_layout()
         QHBoxLayout * h_layout = new QHBoxLayout();
         h_layout->addWidget(new QLabel("Maximum humidity: "),0,Qt::AlignLeft);
         h_layout->addWidget(m_max_humidity_sb,0,Qt::AlignRight);
-        h_layout->addWidget(new QLabel("%"),0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel("mm"),0,Qt::AlignRight);
         main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
     }
     setLayout(main_layout);

@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QLineEdit>
 #include <iostream>
 
 const static char * EDIT_BTN_TEXT = "Edit";
@@ -94,7 +93,7 @@ void PropertyWidgetsWrapper::init_layout()
     main_layout->addWidget(illumination_properties_widget);
 
     // Soil humidity properties
-    QLabel * soil_humidity_title_lbl = new QLabel("Soil Humidity Properties");
+    QLabel * soil_humidity_title_lbl = new QLabel("Humidity Properties (rainfall)");
     soil_humidity_title_lbl->setFont(title_font);
     main_layout->addWidget(soil_humidity_title_lbl);
     main_layout->addWidget(soil_humidity_properties_widget);
@@ -153,17 +152,60 @@ const SpecieProperties * SpeciePropertiesListItem::getProperties()
     return m_specie_properties;
 }
 
+/*********************************
+ * SPECIE PROPERTIES LIST WIDGET *
+ *********************************/
+SpeciePropertiesListWidget::SpeciePropertiesListWidget(QWidget * parent) : QListWidget(parent)
+{
+
+}
+
+SpeciePropertiesListWidget::~SpeciePropertiesListWidget()
+{
+
+}
+
+void SpeciePropertiesListWidget::filter(QString filter_string)
+{
+    hide_all();
+
+    QList<QListWidgetItem*> matches ( findItems(filter_string, Qt::MatchFlag::MatchContains) );
+    for(QListWidgetItem* item : matches)
+        item->setHidden(false);
+}
+
+void SpeciePropertiesListWidget::hide_all()
+{
+    for(int row(0); row < count(); row++ )
+        item(row)->setHidden(true);
+}
+
+
+/********************
+ * SEARCH LINE EDIT *
+ ********************/
+SearchLineEdit::SearchLineEdit( QWidget * parent ) : QLineEdit(parent)
+{
+    setPlaceholderText("Search");
+}
+
+SearchLineEdit::~SearchLineEdit()
+{
+
+}
+
 /*******************
  * PLANT DB EDITOR *
  *******************/
 PlantDBEditor::PlantDBEditor(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f),
   m_plant_db(),
-  m_available_plants_list ( new QListWidget() ),
+  m_available_plants_list ( new SpeciePropertiesListWidget(this) ),
   m_property_widgets_wrapper(new PropertyWidgetsWrapper),
   m_edit_save_edits_btn( new QPushButton()),
   m_cancel_btn( new QPushButton(CANCEL_BTN_TEXT)),
   m_new_confirm_btn( new QPushButton()),
-  m_remove_btn(new QPushButton(REMOVE_BTN_TEXT))
+  m_remove_btn(new QPushButton(REMOVE_BTN_TEXT)),
+  m_specie_filter_le(new SearchLineEdit(this))
 {
     m_available_plants_list->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -187,6 +229,7 @@ void PlantDBEditor::init_signals()
     connect(m_cancel_btn, SIGNAL(clicked()), this, SLOT(cancel_btn_clicked()));
     connect(m_new_confirm_btn, SIGNAL(clicked()), this, SLOT(new_btn_clicked()));
     connect(m_remove_btn, SIGNAL(clicked()), this, SLOT(remove_btn_clicked()));
+    connect(m_specie_filter_le, SIGNAL(textEdited(QString)), m_available_plants_list, SLOT(filter(QString)));
 }
 
 void PlantDBEditor::edit_btn_clicked()
@@ -354,9 +397,18 @@ void PlantDBEditor::init_layout()
     // The plant selector
     QVBoxLayout * plants_v_layout = new QVBoxLayout();
     {
-        QLabel * plants_title_lbl = new QLabel("Species");
-        plants_title_lbl->setFont(title_font);
-        plants_v_layout->addWidget(plants_title_lbl);
+        // Header + search
+        {
+            QHBoxLayout * h_layout = new QHBoxLayout;
+
+            QLabel * plants_title_lbl = new QLabel("Species");
+            plants_title_lbl->setFont(title_font);
+            h_layout->addWidget(plants_title_lbl, Qt::AlignLeft);
+
+            h_layout->addWidget(m_specie_filter_le, Qt::AlignRight);
+
+            plants_v_layout->addLayout(h_layout);
+        }
         plants_v_layout->addWidget(m_available_plants_list);
     }
 
@@ -366,8 +418,8 @@ void PlantDBEditor::init_layout()
     // main layout
     QHBoxLayout * main_h_layout = new QHBoxLayout;
     {
-        main_h_layout->addLayout(plants_v_layout, 0);
-        main_h_layout->addWidget(property_widgets_scroll_area, 1);
+        main_h_layout->addLayout(plants_v_layout, 1);
+        main_h_layout->addWidget(property_widgets_scroll_area, 2);
     }
 
     // The buttons

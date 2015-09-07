@@ -1,26 +1,11 @@
 #include "plant_db.h"
-#include <iostream>
-#include <QString>
-#include <QFile>
-#include <fstream>
+#include "settings.h"
 
-const std::string ConfigurationFileHeaders::_DB_PATH = "DB_LOCATION=";
+#include <QString>
+#include <iostream>
 
 PlantDB::PlantDB()
 {
-    if(_DB_FILE.empty())
-    {
-        if(!load_full_db_location(_DB_FILE))
-        {
-            std::cerr << "Failed to find appropriate database to use! Exiting..." << std::endl;
-            exit(1);
-        }
-        else
-        {
-            std::cout << "Using database: " << _DB_FILE << std::endl;
-        }
-    }
-
     init();
 }
 
@@ -30,57 +15,9 @@ PlantDB::PlantDB()
 sqlite3 * PlantDB::open_db()
 {
     sqlite3 * db;
-    exit_on_error ( sqlite3_open(_DB_FILE.c_str(), &db), __LINE__, "" );
+    exit_on_error ( sqlite3_open(Settings::_DB_FILE.c_str(), &db), __LINE__, "" );
     exit_on_error( sqlite3_exec(db, "PRAGMA foreign_keys = ON;", 0, 0, 0), __LINE__);
     return db;
-}
-
-bool PlantDB::file_exists(const std::string & path)
-{
-    std::ifstream file(path);
-    return !file.fail();
-}
-
-bool PlantDB::load_full_db_location(std::string & db_location)
-{
-    // First try local configuration location
-    std::string config_file;
-
-    if(file_exists("/usr/local/etc/plantDB/plantdb.conf"))
-        config_file = "/usr/local/etc/plantDB/plantdb.conf";
-    else if(file_exists("/etc/plantDB/plantdb.conf"))
-        config_file = "/etc/plantDB/plantdb.conf";
-    else
-    {
-        std::cerr << "Could not find configuration file!" << std::endl;
-        return false;
-    }
-
-    std::ifstream config_reader(config_file, std::ios_base::in);
-    if(config_reader.fail())
-        return false;
-
-    std::string line;
-    while (std::getline(config_reader, line))
-    {
-        if(line.find(ConfigurationFileHeaders::_DB_PATH) != std::string::npos)
-        {
-            line.replace(0, ConfigurationFileHeaders::_DB_PATH.length(), "");
-            if(file_exists(line))
-            {
-                db_location = line;
-                return true;
-            }
-            std::cerr << "Database file not found: " << line << std::endl;
-            return false;
-        }
-        else
-        {
-            std::cerr << "Unknown config parameter: " << line;
-        }
-    }
-    std::cerr << "Could not find database location descriptor in configuration file: " << config_file << std::endl;
-    return false;
 }
 
 void PlantDB::init()

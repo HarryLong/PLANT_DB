@@ -3,10 +3,10 @@ project(PlantDB)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(sqlite3 REQUIRED)
+find_package(Qt5Widgets 5.5 REQUIRED)
+find_package(Qt5Core 5.5 REQUIRED)
+find_package(Qt5Gui 5.5 REQUIRED)
+find_package(sqlite3 5.5 REQUIRED)
 
 set(LIBS ${LIBS} ${Qt5Widgets_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${SQLITE3_LIBRARIES})
 set(INCLUDE_DIRECTORIES ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${SQLITE3_INCLUDE_DIRS})
@@ -23,14 +23,14 @@ SET(CMAKE_BUILD_TYPE RELEASE)
 
 include_directories(${INCLUDE_DIRECTORIES})
 
-SET(LIB_SRC_FILES plant_db plant_properties)
+SET(CORE_SRC_FILES plant_db plant_properties settings)
 SET(DB_EDITOR_SOURCE_FILES main plant_db_editor plant_db_editor_widgets main_window)
 SET(API_HEADER_FILES plant_properties.h plant_db.h)
 
-add_executable(PlantDB_Editor ${DB_EDITOR_SOURCE_FILES} ${LIB_SRC_FILES})
+add_executable(PlantDB_Editor ${DB_EDITOR_SOURCE_FILES} ${CORE_SRC_FILES})
 target_link_libraries(PlantDB_Editor ${LIBS})
 
-add_library(PlantDB SHARED ${LIB_SRC_FILES})
+add_library(PlantDB SHARED ${CORE_SRC_FILES})
 target_link_libraries(PlantDB ${LIBS})
 
 #INSTALL EXECUTABLE

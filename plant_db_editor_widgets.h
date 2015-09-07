@@ -56,6 +56,22 @@ public:
     }
 };
 
+class MyHumiditySpinBox : public QSpinBox
+{
+public:
+    MyHumiditySpinBox() : QSpinBox()
+    {
+        setRange(0,1000);
+    }
+
+    virtual void clear()
+    {
+        setValue(0);
+        QSpinBox::clear();
+    }
+};
+
+
 class My24HourSpinBox : public QSpinBox
 {
 public:
@@ -211,10 +227,10 @@ private:
     void init_layout();
 
     // UI Elements
-    MyPercentageSpinBox* m_prime_humidity_start_sb;
-    MyPercentageSpinBox* m_prime_humidity_end_sb;
-    MyPercentageSpinBox * m_min_humidity_sb;
-    MyPercentageSpinBox * m_max_humidity_sb;
+    MyHumiditySpinBox* m_prime_humidity_start_sb;
+    MyHumiditySpinBox* m_prime_humidity_end_sb;
+    MyHumiditySpinBox * m_min_humidity_sb;
+    MyHumiditySpinBox * m_max_humidity_sb;
 };
 
 /*********************************

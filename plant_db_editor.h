@@ -6,6 +6,7 @@
 
 #include <QListWidget>
 #include <QWidget>
+#include <QLineEdit>
 
 #define PLANT_DB_EDITOR_DIALOG_WIDTH 1000
 #define PLANT_DB_EDITOR_DIALOG_HEIGHT 1000
@@ -52,6 +53,34 @@ private:
     const SpecieProperties * m_specie_properties;
 };
 
+/*********************************
+ * SPECIE PROPERTIES LIST WIDGET *
+ *********************************/
+class SpeciePropertiesListWidget : public QListWidget
+{
+Q_OBJECT
+public:
+    SpeciePropertiesListWidget(QWidget * parent);
+    ~SpeciePropertiesListWidget();
+
+public slots:
+    void filter(QString filter);
+
+private:
+    void hide_all();
+};
+
+/********************
+ * SEARCH LINE EDIT *
+ ********************/
+class SearchLineEdit : public QLineEdit
+{
+Q_OBJECT
+public:
+    SearchLineEdit(QWidget * parent = 0);
+    ~SearchLineEdit();
+};
+
 /*******************
  * PLANT DB EDITOR *
  *******************/
@@ -83,7 +112,7 @@ private:
 //    QString get_current_selected_specie_name();
 //    int get_current_selected_specie_id();
 
-    QListWidget * m_available_plants_list;
+    SpeciePropertiesListWidget * m_available_plants_list;
     PlantDB m_plant_db;
 
     PropertyWidgetsWrapper * m_property_widgets_wrapper;
@@ -93,6 +122,7 @@ private:
     QPushButton * m_cancel_btn;
     QPushButton * m_new_confirm_btn;
     QPushButton * m_remove_btn;
+    QLineEdit * m_specie_filter_le;
 
     Mode m_current_mode;
 };

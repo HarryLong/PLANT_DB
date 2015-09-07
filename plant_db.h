@@ -8,15 +8,6 @@
 #include <map>
 #include <QString>
 
-
-// CONFIGURATION HEADERS
-class ConfigurationFileHeaders{
-public:
-    static const std::string _DB_PATH;
-};
-
-static std::string _DB_FILE = "";
-
 struct Column{
     int index;
     std::string name;
