@@ -118,13 +118,13 @@ static const std::string temperature_properties_table_creation_code =
 
 class PlantDB {
 public:
-    typedef std::map<int, const SpecieProperties*> SpeciePropertiesHolder;
+    typedef std::map<int, const SpecieProperties> SpeciePropertiesHolder;
 
     PlantDB();
     SpeciePropertiesHolder getAllPlantData();
     std::map<int,QString> get_all_species();
-    void insertNewPlantData(SpecieProperties * data);
-    void updatePlantData(const SpecieProperties * data);
+    void insertNewPlantData(SpecieProperties & data);
+    void updatePlantData(const SpecieProperties & data);
     void removePlant(int p_id);
 
     static bool load_full_db_location(std::string & db_location);
@@ -136,12 +136,12 @@ private:
     /*********************
      * SELECT STATEMENTS *
      *********************/
-    std::map<int, const AgeingProperties*> get_all_ageing_properties();
-    std::map<int, const GrowthProperties*> get_all_growth_properties();
-    std::map<int, const IlluminationProperties*> get_all_illumination_properties();
-    std::map<int, const SoilHumidityProperties*> get_all_soil_humidity_properties();
-    std::map<int, const SeedingProperties*> get_all_seeding_properties();
-    std::map<int, const TemperatureProperties*> get_all_temp_properties();
+    std::map<int, const AgeingProperties> get_all_ageing_properties();
+    std::map<int, const GrowthProperties> get_all_growth_properties();
+    std::map<int, const IlluminationProperties> get_all_illumination_properties();
+    std::map<int, const SoilHumidityProperties> get_all_soil_humidity_properties();
+    std::map<int, const SeedingProperties> get_all_seeding_properties();
+    std::map<int, const TemperatureProperties> get_all_temp_properties();
 
     /*********************
      * INSERT STATEMENTS *

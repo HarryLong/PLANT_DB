@@ -30,15 +30,15 @@ PropertyWidgetsWrapper::PropertyWidgetsWrapper() :
     init_layout();
 }
 
-void PropertyWidgetsWrapper::setProperties(const SpecieProperties * p_plant_data)
+void PropertyWidgetsWrapper::setProperties(const SpecieProperties & p_plant_data)
 {
-    m_specie_name_widget->setText(p_plant_data->specie_name);
-    ageing_properties_widget->setProperties(p_plant_data->ageing_properties);
-    growth_property_widget->setProperties(p_plant_data->growth_properties);
-    illumination_properties_widget->setProperties(p_plant_data->illumination_properties);
-    soil_humidity_properties_widget->setProperties(p_plant_data->soil_humidity_properties);
-    temp_properties_widget->setProperties(p_plant_data->temperature_properties);
-    seeding_properties_widget->setProperties(p_plant_data->seeding_properties);
+    m_specie_name_widget->setText(p_plant_data.specie_name);
+    ageing_properties_widget->setProperties(p_plant_data.ageing_properties);
+    growth_property_widget->setProperties(p_plant_data.growth_properties);
+    illumination_properties_widget->setProperties(p_plant_data.illumination_properties);
+    soil_humidity_properties_widget->setProperties(p_plant_data.soil_humidity_properties);
+    temp_properties_widget->setProperties(p_plant_data.temperature_properties);
+    seeding_properties_widget->setProperties(p_plant_data.seeding_properties);
 }
 
 void PropertyWidgetsWrapper::setEnabled(bool p_enabled)
@@ -114,42 +114,45 @@ void PropertyWidgetsWrapper::init_layout()
 }
 
 
-SpecieProperties * PropertyWidgetsWrapper::toProperties()
+SpecieProperties PropertyWidgetsWrapper::toProperties()
 {
-    return new SpecieProperties(m_specie_name_widget->text(),
-                           ageing_properties_widget->getProperties(),
-                           growth_property_widget->getProperties(),
-                           illumination_properties_widget->getProperties(),
-                           soil_humidity_properties_widget->getProperties(),
-                           temp_properties_widget->getProperties(),
-                           seeding_properties_widget->getProperties());
+    return SpecieProperties(m_specie_name_widget->text(),
+                            ageing_properties_widget->getProperties(),
+                            growth_property_widget->getProperties(),
+                            illumination_properties_widget->getProperties(),
+                            soil_humidity_properties_widget->getProperties(),
+                            temp_properties_widget->getProperties(),
+                            seeding_properties_widget->getProperties());
 }
 
 
 /*******************************
  * SPECIE PROPERTIES LIST ITEM *
  *******************************/
-SpeciePropertiesListItem::SpeciePropertiesListItem ( const SpecieProperties * specie_properties) : QListWidgetItem(), m_specie_properties(NULL)
+SpeciePropertiesListItem::SpeciePropertiesListItem ( const SpecieProperties & specie_properties) : QListWidgetItem(), m_specie_properties(specie_properties)
 {
-    setSpecieProperties(specie_properties);
+    refresh_text();
 }
 
 SpeciePropertiesListItem::~SpeciePropertiesListItem()
 {
-    delete m_specie_properties;
+
 }
 
-void SpeciePropertiesListItem::setSpecieProperties( const SpecieProperties * specie_properties)
-{
-    if(m_specie_properties)
-        delete m_specie_properties;
-    m_specie_properties = specie_properties;
-    setText(specie_properties->specie_name);
-}
+//void SpeciePropertiesListItem::setSpecieProperties( const SpecieProperties & specie_properties)
+//{
+//    m_specie_properties = specie_properties;
+//    refresh_text();
+//}
 
-const SpecieProperties * SpeciePropertiesListItem::getProperties()
+const SpecieProperties & SpeciePropertiesListItem::getProperties()
 {
     return m_specie_properties;
+}
+
+void SpeciePropertiesListItem::refresh_text()
+{
+    setText(m_specie_properties.specie_name);
 }
 
 /*********************************
@@ -180,6 +183,11 @@ void SpeciePropertiesListWidget::hide_all()
         item(row)->setHidden(true);
 }
 
+void SpeciePropertiesListWidget::removeSelected()
+{
+    if(currentRow() >= 0)
+        delete takeItem(currentRow());
+}
 
 /********************
  * SEARCH LINE EDIT *
@@ -273,8 +281,9 @@ void PlantDBEditor::remove_btn_clicked()
 
     if(selected_item != NULL)
     {
-        m_plant_db.removePlant(selected_item->getProperties()->specie_id); // remove from the db
-        delete m_available_plants_list->takeItem(m_available_plants_list->currentRow()); // Remove current item from list
+        m_plant_db.removePlant(selected_item->getProperties().specie_id); // remove from the db
+        m_available_plants_list->removeSelected();
+        m_available_plants_list->sortItems( );
     }
 }
 
@@ -326,21 +335,27 @@ void PlantDBEditor::set_mode(Mode p_mode)
 void PlantDBEditor::commit(bool update)
 {
     // TODO: Update the internal data map    
-    SpecieProperties * properties(m_property_widgets_wrapper->toProperties());
+    SpecieProperties properties(m_property_widgets_wrapper->toProperties());
 
     if(update) // i.e item exists
     {
+        SpeciePropertiesListItem * selected_item(get_current_selected_list_item());
+
         // Get the id
-        properties->specie_id = get_current_selected_list_item()->getProperties()->specie_id;
+        properties.specie_id = selected_item->getProperties().specie_id;
+
         m_plant_db.updatePlantData(properties);
 
-        get_current_selected_list_item()->setSpecieProperties(const_cast<const SpecieProperties*>(properties));
+        m_available_plants_list->removeSelected();
+//        get_current_selected_list_item()->setSpecieProperties(const_cast<const SpecieProperties*>(properties));
     }
     else
     {
         m_plant_db.insertNewPlantData(properties); // Specie ID is set upon addition to the database
-        m_available_plants_list->addItem(new SpeciePropertiesListItem(properties));
     }
+
+    m_available_plants_list->addItem(new SpeciePropertiesListItem(properties));
+    m_available_plants_list->sortItems( );
 }
 
 void PlantDBEditor::refresh_property_widgets()
@@ -380,6 +395,7 @@ void PlantDBEditor::init_content()
     {
         m_available_plants_list->addItem(new SpeciePropertiesListItem(it->second));
     }
+    m_available_plants_list->sortItems( );
 }
 
 SpeciePropertiesListItem* PlantDBEditor::get_current_selected_list_item()

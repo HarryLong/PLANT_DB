@@ -16,10 +16,10 @@ class QPushButton;
 class PropertyWidgetsWrapper : public QWidget{
 public:
     PropertyWidgetsWrapper();
-    void setProperties(const SpecieProperties * p_plant_data);
+    void setProperties(const SpecieProperties & p_plant_data);
     void setEnabled(bool p_enabled);
     void clear();
-    SpecieProperties * toProperties();
+    SpecieProperties toProperties();
 
 private:
     void init_layout();
@@ -44,13 +44,14 @@ enum Mode{
 class SpeciePropertiesListItem : public QListWidgetItem
 {
 public:
-    SpeciePropertiesListItem ( const SpecieProperties * specie_properties);
+    SpeciePropertiesListItem ( const SpecieProperties & specie_properties);
     ~SpeciePropertiesListItem ();
-    void setSpecieProperties(const SpecieProperties * specie_properties);
-    const SpecieProperties * getProperties();
+//    void setSpecieProperties(const SpecieProperties & specie_properties);
+    const SpecieProperties & getProperties();
 
 private:
-    const SpecieProperties * m_specie_properties;
+    void refresh_text();
+    const SpecieProperties m_specie_properties;
 };
 
 /*********************************
@@ -65,6 +66,7 @@ public:
 
 public slots:
     void filter(QString filter);
+    void removeSelected();
 
 private:
     void hide_all();

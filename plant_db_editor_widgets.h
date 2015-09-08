@@ -143,9 +143,9 @@ public:
     GrowthPropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~GrowthPropertiesWidget();
 
-    GrowthProperties* getProperties();
+    GrowthProperties getProperties();
 
-    void setProperties(const GrowthProperties * p_properties);
+    void setProperties(const GrowthProperties & p_properties);
     void clear();
 
 private slots:
@@ -171,9 +171,9 @@ public:
     AgeingPropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~AgeingPropertiesWidget();
 
-    AgeingProperties* getProperties();
+    AgeingProperties getProperties();
 
-    void setProperties(const AgeingProperties * p_properties);
+    void setProperties(const AgeingProperties & p_properties);
     void clear();
 
 private:
@@ -193,9 +193,9 @@ public:
     IlluminationPropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~IlluminationPropertiesWidget();
 
-    IlluminationProperties* getProperties();
+    IlluminationProperties getProperties();
 
-    void setProperties(const IlluminationProperties * p_properties);
+    void setProperties(const IlluminationProperties & p_properties);
     void clear();
 
 private:
@@ -218,9 +218,9 @@ public:
     SoilHumidityPropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~SoilHumidityPropertiesWidget();
 
-    SoilHumidityProperties* getProperties();
+    SoilHumidityProperties getProperties();
 
-    void setProperties(const SoilHumidityProperties * p_properties);
+    void setProperties(const SoilHumidityProperties & p_properties);
     void clear();
 
 private:
@@ -242,9 +242,9 @@ public:
     TemperaturePropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~TemperaturePropertiesWidget();
 
-    TemperatureProperties* getProperties();
+    TemperatureProperties getProperties();
 
-    void setProperties(const TemperatureProperties * p_properties);
+    void setProperties(const TemperatureProperties & p_properties);
     void clear();
 
 private:
@@ -266,9 +266,9 @@ public:
     SeedingPropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~SeedingPropertiesWidget();
 
-    SeedingProperties* getProperties();
+    SeedingProperties getProperties();
 
-    void setProperties(const SeedingProperties * p_properties);
+    void setProperties(const SeedingProperties & p_properties);
     void clear();
 
 private:

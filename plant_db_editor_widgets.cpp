@@ -28,18 +28,18 @@ GrowthPropertiesWidget::~GrowthPropertiesWidget()
 {
 }
 
-GrowthProperties* GrowthPropertiesWidget::getProperties()
+GrowthProperties GrowthPropertiesWidget::getProperties()
 {
-    return new GrowthProperties (m_max_height_dsb->value(),
+    return GrowthProperties (m_max_height_dsb->value(),
                              m_max_root_size_dsb->value(),
                              m_max_canopy_width_dsb->value());
 }
 
-void GrowthPropertiesWidget::setProperties(const GrowthProperties * p_properties)
+void GrowthPropertiesWidget::setProperties(const GrowthProperties & p_properties)
 {
-    m_max_height_dsb->setValue(p_properties->max_height);
-    m_max_canopy_width_dsb->setValue(p_properties->max_canopy_width);
-    m_max_root_size_dsb->setValue(p_properties->max_root_size);
+    m_max_height_dsb->setValue(p_properties.max_height);
+    m_max_canopy_width_dsb->setValue(p_properties.max_canopy_width);
+    m_max_root_size_dsb->setValue(p_properties.max_root_size);
 }
 
 void GrowthPropertiesWidget::clear()
@@ -117,16 +117,16 @@ AgeingPropertiesWidget::~AgeingPropertiesWidget()
 
 }
 
-AgeingProperties* AgeingPropertiesWidget::getProperties()
+AgeingProperties AgeingPropertiesWidget::getProperties()
 {
-    return new AgeingProperties(m_start_of_decline_sb->value(),
+    return AgeingProperties(m_start_of_decline_sb->value(),
                             m_max_age_sb->value());
 }
 
-void AgeingPropertiesWidget::setProperties(const AgeingProperties * p_properties)
+void AgeingPropertiesWidget::setProperties(const AgeingProperties & p_properties)
 {
-    m_start_of_decline_sb->setValue(p_properties->start_of_decline);
-    m_max_age_sb->setValue(p_properties->max_age);
+    m_start_of_decline_sb->setValue(p_properties.start_of_decline);
+    m_max_age_sb->setValue(p_properties.max_age);
 }
 
 void AgeingPropertiesWidget::clear()
@@ -176,19 +176,19 @@ IlluminationPropertiesWidget::~IlluminationPropertiesWidget()
 {
 }
 
-IlluminationProperties * IlluminationPropertiesWidget::getProperties()
+IlluminationProperties IlluminationPropertiesWidget::getProperties()
 {
-    return new IlluminationProperties(Range(m_prime_illumination_start_sb->value(),m_prime_illumination_end_sb->value()),
+    return IlluminationProperties(Range(m_prime_illumination_start_sb->value(),m_prime_illumination_end_sb->value()),
                                       m_min_illumination_sb->value(), m_max_illumination_sb->value());
 }
 
-void IlluminationPropertiesWidget::setProperties(const IlluminationProperties * p_properties)
+void IlluminationPropertiesWidget::setProperties(const IlluminationProperties & p_properties)
 {
-    m_prime_illumination_start_sb->setValue(p_properties->prime_illumination.first);
-    m_prime_illumination_end_sb->setValue(p_properties->prime_illumination.second);
+    m_prime_illumination_start_sb->setValue(p_properties.prime_illumination.first);
+    m_prime_illumination_end_sb->setValue(p_properties.prime_illumination.second);
 
-    m_min_illumination_sb->setValue(p_properties->min_illumination);
-    m_max_illumination_sb->setValue(p_properties->max_illumination);
+    m_min_illumination_sb->setValue(p_properties.min_illumination);
+    m_max_illumination_sb->setValue(p_properties.max_illumination);
 }
 
 void IlluminationPropertiesWidget::clear()
@@ -257,18 +257,18 @@ SoilHumidityPropertiesWidget::~SoilHumidityPropertiesWidget()
 
 }
 
-SoilHumidityProperties * SoilHumidityPropertiesWidget::getProperties()
+SoilHumidityProperties SoilHumidityPropertiesWidget::getProperties()
 {
-    return new SoilHumidityProperties(Range(m_prime_humidity_start_sb->value(), m_prime_humidity_end_sb->value()),
+    return SoilHumidityProperties(Range(m_prime_humidity_start_sb->value(), m_prime_humidity_end_sb->value()),
                                       m_min_humidity_sb->value(), m_max_humidity_sb->value());
 }
 
-void SoilHumidityPropertiesWidget::setProperties(const SoilHumidityProperties * p_properties)
+void SoilHumidityPropertiesWidget::setProperties(const SoilHumidityProperties & p_properties)
 {
-    m_prime_humidity_start_sb->setValue(p_properties->prime_soil_humidity.first);
-    m_prime_humidity_end_sb->setValue(p_properties->prime_soil_humidity.second);
-    m_min_humidity_sb->setValue(p_properties->min_soil_humidity);
-    m_max_humidity_sb->setValue(p_properties->max_soil_humidity);
+    m_prime_humidity_start_sb->setValue(p_properties.prime_soil_humidity.first);
+    m_prime_humidity_end_sb->setValue(p_properties.prime_soil_humidity.second);
+    m_min_humidity_sb->setValue(p_properties.min_soil_humidity);
+    m_max_humidity_sb->setValue(p_properties.max_soil_humidity);
 }
 
 void SoilHumidityPropertiesWidget::clear()
@@ -337,18 +337,18 @@ TemperaturePropertiesWidget::~TemperaturePropertiesWidget()
 
 }
 
-TemperatureProperties* TemperaturePropertiesWidget::getProperties()
+TemperatureProperties TemperaturePropertiesWidget::getProperties()
 {
-    return new TemperatureProperties(Range(m_prime_temp_start_sb->value(), m_prime_temp_end_sb->value()),
+    return TemperatureProperties(Range(m_prime_temp_start_sb->value(), m_prime_temp_end_sb->value()),
                                      m_min_temp_sb->value(), m_max_temp_sb->value());
 }
 
-void TemperaturePropertiesWidget::setProperties(const TemperatureProperties * p_properties)
+void TemperaturePropertiesWidget::setProperties(const TemperatureProperties & p_properties)
 {
-    m_prime_temp_start_sb->setValue(p_properties->prime_temp.first);
-    m_prime_temp_end_sb->setValue(p_properties->prime_temp.second);
-    m_min_temp_sb->setValue(p_properties->min_temp);
-    m_max_temp_sb->setValue(p_properties->max_temp);
+    m_prime_temp_start_sb->setValue(p_properties.prime_temp.first);
+    m_prime_temp_end_sb->setValue(p_properties.prime_temp.second);
+    m_min_temp_sb->setValue(p_properties.min_temp);
+    m_max_temp_sb->setValue(p_properties.max_temp);
 }
 
 void TemperaturePropertiesWidget::clear()
@@ -426,16 +426,15 @@ SeedingPropertiesWidget::~SeedingPropertiesWidget()
 
 }
 
-SeedingProperties* SeedingPropertiesWidget::getProperties()
+SeedingProperties SeedingPropertiesWidget::getProperties()
 {
-    return new SeedingProperties(m_max_seeding_distance_sb->value(),
-                                  m_seed_count_sb->value());
+    return SeedingProperties(m_max_seeding_distance_sb->value(), m_seed_count_sb->value());
 }
 
-void SeedingPropertiesWidget::setProperties(const SeedingProperties * p_properties)
+void SeedingPropertiesWidget::setProperties(const SeedingProperties & p_properties)
 {
-    m_max_seeding_distance_sb->setValue(p_properties->max_seed_distance);
-    m_seed_count_sb->setValue(p_properties->seed_count);
+    m_max_seeding_distance_sb->setValue(p_properties.max_seed_distance);
+    m_seed_count_sb->setValue(p_properties.seed_count);
 }
 
 void SeedingPropertiesWidget::clear()
