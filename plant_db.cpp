@@ -66,33 +66,34 @@ PlantDB::SpeciePropertiesHolder PlantDB::getAllPlantData()
     PlantDB::SpeciePropertiesHolder ret;
 
     std::map<int, QString> specie_ids(get_all_species());
-    std::map<int, const AgeingProperties> ageing_properties(get_all_ageing_properties());
-    std::map<int, const GrowthProperties> growth_properties(get_all_growth_properties());
-    std::map<int, const IlluminationProperties> illumination_properties(get_all_illumination_properties());
-    std::map<int, const SoilHumidityProperties> soil_humidity_properties(get_all_soil_humidity_properties());
-    std::map<int, const SeedingProperties> seeding_properties(get_all_seeding_properties());
-    std::map<int, const TemperatureProperties> temperature_properties(get_all_temp_properties());
+    std::map<int, AgeingProperties> ageing_properties(get_all_ageing_properties());
+    std::map<int, GrowthProperties> growth_properties(get_all_growth_properties());
+    std::map<int, IlluminationProperties> illumination_properties(get_all_illumination_properties());
+    std::map<int, SoilHumidityProperties> soil_humidity_properties(get_all_soil_humidity_properties());
+    std::map<int, SeedingProperties> seeding_properties(get_all_seeding_properties());
+    std::map<int, TemperatureProperties> temperature_properties(get_all_temp_properties());
 
     for(auto it (specie_ids.begin()); it != specie_ids.end(); it++)
     {
         int id(it->first);
         QString name(it->second);
-        const AgeingProperties ageing_property(ageing_properties.find(id)->second);
-        const GrowthProperties growth_property(growth_properties.find(id)->second);
-        const IlluminationProperties illumination_property(illumination_properties.find(id)->second);
-        const SoilHumidityProperties soil_humidity_property(soil_humidity_properties.find(id)->second);
-        const TemperatureProperties temperature_property(temperature_properties.find(id)->second);
-        const SeedingProperties seeding_property(seeding_properties.find(id)->second);
+        AgeingProperties ageing_property(ageing_properties.find(id)->second);
+        GrowthProperties growth_property(growth_properties.find(id)->second);
+        IlluminationProperties illumination_property(illumination_properties.find(id)->second);
+        SoilHumidityProperties soil_humidity_property(soil_humidity_properties.find(id)->second);
+        TemperatureProperties temperature_property(temperature_properties.find(id)->second);
+        SeedingProperties seeding_property(seeding_properties.find(id)->second);
 
-        ret.insert(std::pair<int, SpecieProperties>(id,
-                                                    SpecieProperties(name,
-                                                                     id,
-                                                                     ageing_property,
-                                                                     growth_property,
-                                                                     illumination_property,
-                                                                     soil_humidity_property,
-                                                                     temperature_property,
-                                                                     seeding_property)));
+        SpecieProperties sp(name,
+                            id,
+                            ageing_property,
+                            growth_property,
+                            illumination_property,
+                            soil_humidity_property,
+                            temperature_property,
+                            seeding_property);
+
+        ret.emplace(id,sp);
     }
 
     return ret;
@@ -169,7 +170,7 @@ std::map<int,QString> PlantDB::get_all_species()
     return specie_id_to_name;
 }
 
-std::map<int, const AgeingProperties> PlantDB::get_all_ageing_properties()
+std::map<int, AgeingProperties> PlantDB::get_all_ageing_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -177,7 +178,7 @@ std::map<int, const AgeingProperties> PlantDB::get_all_ageing_properties()
 
     static const std::string sql = "SELECT * FROM " + ageing_properties_table_name + ";";
 
-    std::map<int,const AgeingProperties> ret;
+    std::map<int, AgeingProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -204,7 +205,7 @@ std::map<int, const AgeingProperties> PlantDB::get_all_ageing_properties()
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const AgeingProperties>(id, AgeingProperties(start_of_decline, max_age)));
+        ret.emplace(id, AgeingProperties(start_of_decline, max_age));
     }
 
     sqlite3_finalize(statement);
@@ -213,7 +214,7 @@ std::map<int, const AgeingProperties> PlantDB::get_all_ageing_properties()
     return ret;
 }
 
-std::map<int, const GrowthProperties> PlantDB::get_all_growth_properties()
+std::map<int, GrowthProperties> PlantDB::get_all_growth_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -221,7 +222,7 @@ std::map<int, const GrowthProperties> PlantDB::get_all_growth_properties()
 
     static const std::string sql = "SELECT * FROM " + growth_properties_table_name + ";";
 
-    std::map<int,const GrowthProperties> ret;
+    std::map<int, GrowthProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -251,7 +252,7 @@ std::map<int, const GrowthProperties> PlantDB::get_all_growth_properties()
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const GrowthProperties>(id, GrowthProperties(max_height, max_root_size, max_canopy_width)));
+        ret.emplace(id, GrowthProperties(max_height, max_root_size, max_canopy_width));
     }
     sqlite3_finalize(statement);
     sqlite3_close(db);
@@ -259,7 +260,7 @@ std::map<int, const GrowthProperties> PlantDB::get_all_growth_properties()
     return ret;
 }
 
-std::map<int, const IlluminationProperties> PlantDB::get_all_illumination_properties()
+std::map<int, IlluminationProperties> PlantDB::get_all_illumination_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -267,7 +268,7 @@ std::map<int, const IlluminationProperties> PlantDB::get_all_illumination_proper
 
     static const std::string sql = "SELECT * FROM " + illumination_properties_table_name + ";";
 
-    std::map<int,const IlluminationProperties> ret;
+    std::map<int,IlluminationProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -300,14 +301,14 @@ std::map<int, const IlluminationProperties> PlantDB::get_all_illumination_proper
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const IlluminationProperties>(id, IlluminationProperties(Range(prime_start, prime_end), min, max)));
+        ret.emplace(id, IlluminationProperties(Range(prime_start, prime_end), min, max));
     }
     sqlite3_finalize(statement);
     sqlite3_close(db);
     return ret;
 }
 
-std::map<int, const SoilHumidityProperties> PlantDB::get_all_soil_humidity_properties()
+std::map<int, SoilHumidityProperties> PlantDB::get_all_soil_humidity_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -315,7 +316,7 @@ std::map<int, const SoilHumidityProperties> PlantDB::get_all_soil_humidity_prope
 
     static const std::string sql = "SELECT * FROM " + soil_humidity_properties_table_name + ";";
 
-    std::map<int,const SoilHumidityProperties> ret;
+    std::map<int,SoilHumidityProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -348,7 +349,7 @@ std::map<int, const SoilHumidityProperties> PlantDB::get_all_soil_humidity_prope
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const SoilHumidityProperties>(id, SoilHumidityProperties(Range(prime_start, prime_end), min, max)));
+        ret.emplace(id, SoilHumidityProperties(Range(prime_start, prime_end), min, max));
     }
 
     // finalise the statement
@@ -358,7 +359,7 @@ std::map<int, const SoilHumidityProperties> PlantDB::get_all_soil_humidity_prope
     return ret;
 }
 
-std::map<int, const SeedingProperties> PlantDB::get_all_seeding_properties()
+std::map<int, SeedingProperties> PlantDB::get_all_seeding_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -366,7 +367,7 @@ std::map<int, const SeedingProperties> PlantDB::get_all_seeding_properties()
 
     static const std::string sql = "SELECT * FROM " + seeding_properties_table_name + ";";
 
-    std::map<int,const SeedingProperties> ret;
+    std::map<int, SeedingProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -393,7 +394,7 @@ std::map<int, const SeedingProperties> PlantDB::get_all_seeding_properties()
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const SeedingProperties>(id, SeedingProperties(max_seeding_distance, seed_count)));
+        ret.emplace(id, SeedingProperties(max_seeding_distance, seed_count));
     }
     // finalise the statement
     sqlite3_finalize(statement);
@@ -402,7 +403,7 @@ std::map<int, const SeedingProperties> PlantDB::get_all_seeding_properties()
     return ret;
 }
 
-std::map<int, const TemperatureProperties> PlantDB::get_all_temp_properties()
+std::map<int, TemperatureProperties> PlantDB::get_all_temp_properties()
 {
     sqlite3 * db (open_db());
     char * error_msg = 0;
@@ -410,7 +411,7 @@ std::map<int, const TemperatureProperties> PlantDB::get_all_temp_properties()
 
     static const std::string sql = "SELECT * FROM " + temperature_properties_table_name + ";";
 
-    std::map<int,const TemperatureProperties> ret;
+    std::map<int, TemperatureProperties> ret;
 
     // Prepare the statement
     int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
@@ -443,7 +444,7 @@ std::map<int, const TemperatureProperties> PlantDB::get_all_temp_properties()
                 exit(1);
             }
         }
-        ret.insert(std::pair<int,const TemperatureProperties>(id, TemperatureProperties(Range(prime_start,prime_end), min, max)));
+        ret.emplace(id, TemperatureProperties(Range(prime_start,prime_end), min, max));
     }
     // finalise the statement
     sqlite3_finalize(statement);

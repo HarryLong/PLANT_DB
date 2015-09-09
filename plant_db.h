@@ -118,7 +118,7 @@ static const std::string temperature_properties_table_creation_code =
 
 class PlantDB {
 public:
-    typedef std::map<int, const SpecieProperties> SpeciePropertiesHolder;
+    typedef std::map<int, SpecieProperties> SpeciePropertiesHolder;
 
     PlantDB();
     SpeciePropertiesHolder getAllPlantData();
@@ -136,12 +136,12 @@ private:
     /*********************
      * SELECT STATEMENTS *
      *********************/
-    std::map<int, const AgeingProperties> get_all_ageing_properties();
-    std::map<int, const GrowthProperties> get_all_growth_properties();
-    std::map<int, const IlluminationProperties> get_all_illumination_properties();
-    std::map<int, const SoilHumidityProperties> get_all_soil_humidity_properties();
-    std::map<int, const SeedingProperties> get_all_seeding_properties();
-    std::map<int, const TemperatureProperties> get_all_temp_properties();
+    std::map<int, AgeingProperties> get_all_ageing_properties();
+    std::map<int, GrowthProperties> get_all_growth_properties();
+    std::map<int, IlluminationProperties> get_all_illumination_properties();
+    std::map<int, SoilHumidityProperties> get_all_soil_humidity_properties();
+    std::map<int, SeedingProperties> get_all_seeding_properties();
+    std::map<int, TemperatureProperties> get_all_temp_properties();
 
     /*********************
      * INSERT STATEMENTS *
