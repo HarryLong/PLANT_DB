@@ -20,6 +20,7 @@ const static char * REMOVE_BTN_TEXT = "Delete";
  ****************************/
 PropertyWidgetsWrapper::PropertyWidgetsWrapper() :
     m_specie_name_widget(new QLineEdit),
+    m_specie_id(new QLabel),
     growth_property_widget(new GrowthPropertiesWidget),
     ageing_properties_widget(new AgeingPropertiesWidget),
     illumination_properties_widget(new IlluminationPropertiesWidget),
@@ -33,6 +34,7 @@ PropertyWidgetsWrapper::PropertyWidgetsWrapper() :
 void PropertyWidgetsWrapper::setProperties(const SpecieProperties & p_plant_data)
 {
     m_specie_name_widget->setText(p_plant_data.specie_name);
+    m_specie_id->setText(QString::number(p_plant_data.specie_id));
     ageing_properties_widget->setProperties(p_plant_data.ageing_properties);
     growth_property_widget->setProperties(p_plant_data.growth_properties);
     illumination_properties_widget->setProperties(p_plant_data.illumination_properties);
@@ -55,6 +57,7 @@ void PropertyWidgetsWrapper::setEnabled(bool p_enabled)
 void PropertyWidgetsWrapper::clear()
 {
     m_specie_name_widget->clear();
+    m_specie_id->clear();
     ageing_properties_widget->clear();
     growth_property_widget->clear();
     illumination_properties_widget->clear();
@@ -69,10 +72,29 @@ void PropertyWidgetsWrapper::init_layout()
 
     QVBoxLayout * main_layout = new QVBoxLayout;
 
-    QLabel * specie_name_title = new QLabel("Specie Name: ");
-    specie_name_title->setFont(title_font);
-    main_layout->addWidget(specie_name_title);
-    main_layout->addWidget(m_specie_name_widget);
+    // SPECIE NAME
+    {
+        QLabel * specie_name_title = new QLabel("Specie Name: ");
+        specie_name_title->setFont(title_font);
+        main_layout->addWidget(specie_name_title);
+        {
+            QHBoxLayout * h_layout = new QHBoxLayout;
+            h_layout->addWidget(m_specie_name_widget, 1);
+            main_layout->addLayout(h_layout);
+        }
+    }
+
+    // SPECIE ID
+    {
+        QLabel * specie_id_title = new QLabel("Specie ID:");
+        specie_id_title->setFont(title_font);
+        {
+            QHBoxLayout * h_layout = new QHBoxLayout;
+            h_layout->addWidget(specie_id_title, Qt::AlignLeft);
+            h_layout->addWidget(m_specie_id, Qt::AlignLeft);
+            main_layout->addLayout(h_layout);
+        }
+    }
 
     // Growth properties
     QLabel * growth_title_lbl = new QLabel("Growth Properties");
@@ -125,7 +147,6 @@ SpecieProperties PropertyWidgetsWrapper::toProperties()
                             seeding_properties_widget->getProperties());
 }
 
-
 /*******************************
  * SPECIE PROPERTIES LIST ITEM *
  *******************************/
@@ -152,7 +173,7 @@ const SpecieProperties & SpeciePropertiesListItem::getProperties()
 
 void SpeciePropertiesListItem::refresh_text()
 {
-    setText(m_specie_properties.specie_name);
+    setText(m_specie_properties.specie_name + " [ID: " + QString::number(m_specie_properties.specie_id) + "]");
 }
 
 /*********************************

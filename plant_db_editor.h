@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QWidget>
 #include <QLineEdit>
+#include <QLabel>
 
 #define PLANT_DB_EDITOR_DIALOG_WIDTH 1000
 #define PLANT_DB_EDITOR_DIALOG_HEIGHT 1000
@@ -24,6 +25,7 @@ public:
 private:
     void init_layout();
     QLineEdit * m_specie_name_widget;
+    QLabel * m_specie_id;
     GrowthPropertiesWidget * growth_property_widget;
     AgeingPropertiesWidget * ageing_properties_widget;
     IlluminationPropertiesWidget * illumination_properties_widget;
