@@ -89,6 +89,19 @@ public:
 
 //---------------------------------------------------------------------------
 
+class SlopeProperties {
+public:
+    SlopeProperties(const SlopeProperties & other);
+    SlopeProperties(); //TMP
+    SlopeProperties( int p_start_of_decline,
+                      int p_max);
+
+    const int start_of_decline;
+    const int max;
+};
+
+//---------------------------------------------------------------------------
+
 class SpecieProperties{
 public:
     SpecieProperties();
@@ -101,7 +114,8 @@ public:
                     IlluminationProperties illumination_properties,
                     SoilHumidityProperties soil_humidity_properties,
                     TemperatureProperties temperature_properties,
-                    SeedingProperties seeding_properties);
+                    SeedingProperties seeding_properties,
+                    SlopeProperties slope_properties);
 
     SpecieProperties(QString name, int id,
                     AgeingProperties ageing_properties,
@@ -109,7 +123,8 @@ public:
                     IlluminationProperties illumination_properties,
                     SoilHumidityProperties soil_humidity_properties,
                     TemperatureProperties temperature_properties,
-                    SeedingProperties seeding_properties);
+                    SeedingProperties seeding_properties,
+                    SlopeProperties slope_properties);
 
 //    SpecieProperties & operator=(const SpecieProperties & other);
 
@@ -121,6 +136,7 @@ public:
     SoilHumidityProperties soil_humidity_properties;
     TemperatureProperties temperature_properties;
     SeedingProperties seeding_properties;
+    SlopeProperties slope_properties;
 };
 
 

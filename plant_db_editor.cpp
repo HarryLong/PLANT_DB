@@ -26,7 +26,8 @@ PropertyWidgetsWrapper::PropertyWidgetsWrapper() :
     illumination_properties_widget(new IlluminationPropertiesWidget),
     soil_humidity_properties_widget(new SoilHumidityPropertiesWidget),
     temp_properties_widget(new TemperaturePropertiesWidget),
-    seeding_properties_widget(new SeedingPropertiesWidget)
+    seeding_properties_widget(new SeedingPropertiesWidget),
+    slope_properties_widget(new SlopePropertiesWidget)
 {
     init_layout();
 }
@@ -41,6 +42,7 @@ void PropertyWidgetsWrapper::setProperties(const SpecieProperties & p_plant_data
     soil_humidity_properties_widget->setProperties(p_plant_data.soil_humidity_properties);
     temp_properties_widget->setProperties(p_plant_data.temperature_properties);
     seeding_properties_widget->setProperties(p_plant_data.seeding_properties);
+    slope_properties_widget->setProperties(p_plant_data.slope_properties);
 }
 
 void PropertyWidgetsWrapper::setEnabled(bool p_enabled)
@@ -52,6 +54,7 @@ void PropertyWidgetsWrapper::setEnabled(bool p_enabled)
     soil_humidity_properties_widget->setEnabled(p_enabled);
     temp_properties_widget->setEnabled(p_enabled);
     seeding_properties_widget->setEnabled(p_enabled);
+    slope_properties_widget->setEnabled(p_enabled);
 }
 
 void PropertyWidgetsWrapper::clear()
@@ -64,6 +67,7 @@ void PropertyWidgetsWrapper::clear()
     soil_humidity_properties_widget->clear();
     temp_properties_widget->clear();
     seeding_properties_widget->clear();
+    slope_properties_widget->clear();
 }
 
 void PropertyWidgetsWrapper::init_layout()
@@ -126,6 +130,12 @@ void PropertyWidgetsWrapper::init_layout()
     main_layout->addWidget(temp_title_lbl);
     main_layout->addWidget(temp_properties_widget);
 
+    // Slope properties
+    QLabel * slope_title_lbl = new QLabel("Slope Properties");
+    slope_title_lbl->setFont(title_font);
+    main_layout->addWidget(slope_title_lbl);
+    main_layout->addWidget(slope_properties_widget);
+
     // Seeding properties
     QLabel * seeding_properties_title_lbl = new QLabel("Seeding Properties");
     seeding_properties_title_lbl->setFont(title_font);
@@ -144,7 +154,8 @@ SpecieProperties PropertyWidgetsWrapper::toProperties()
                             illumination_properties_widget->getProperties(),
                             soil_humidity_properties_widget->getProperties(),
                             temp_properties_widget->getProperties(),
-                            seeding_properties_widget->getProperties());
+                            seeding_properties_widget->getProperties(),
+                            slope_properties_widget->getProperties());
 }
 
 /*******************************
@@ -179,17 +190,17 @@ void SpeciePropertiesListItem::refresh_text()
 /*********************************
  * SPECIE PROPERTIES LIST WIDGET *
  *********************************/
-SpeciePropertiesListWidget::SpeciePropertiesListWidget(QWidget * parent) : QListWidget(parent)
+SpecieSuitabilityListWidget::SpecieSuitabilityListWidget(QWidget * parent) : QListWidget(parent)
 {
 
 }
 
-SpeciePropertiesListWidget::~SpeciePropertiesListWidget()
+SpecieSuitabilityListWidget::~SpecieSuitabilityListWidget()
 {
 
 }
 
-void SpeciePropertiesListWidget::filter(QString filter_string)
+void SpecieSuitabilityListWidget::filter(QString filter_string)
 {
     hide_all();
 
@@ -198,13 +209,13 @@ void SpeciePropertiesListWidget::filter(QString filter_string)
         item->setHidden(false);
 }
 
-void SpeciePropertiesListWidget::hide_all()
+void SpecieSuitabilityListWidget::hide_all()
 {
     for(int row(0); row < count(); row++ )
         item(row)->setHidden(true);
 }
 
-void SpeciePropertiesListWidget::removeSelected()
+void SpecieSuitabilityListWidget::removeSelected()
 {
     if(currentRow() >= 0)
         delete takeItem(currentRow());
@@ -228,7 +239,7 @@ SearchLineEdit::~SearchLineEdit()
  *******************/
 PlantDBEditor::PlantDBEditor(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f),
   m_plant_db(),
-  m_available_plants_list ( new SpeciePropertiesListWidget(this) ),
+  m_available_plants_list ( new SpecieSuitabilityListWidget(this) ),
   m_property_widgets_wrapper(new PropertyWidgetsWrapper),
   m_edit_save_edits_btn( new QPushButton()),
   m_cancel_btn( new QPushButton(CANCEL_BTN_TEXT)),

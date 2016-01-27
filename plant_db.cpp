@@ -53,6 +53,10 @@ void PlantDB::init()
     rc = sqlite3_exec(db, temperature_properties_table_creation_code.c_str(), NULL, 0, &error_msg);
     exit_on_error ( rc, __LINE__, error_msg );
 
+    // slope properties table
+    rc = sqlite3_exec(db, slope_properties_table_creation_code.c_str(), NULL, 0, &error_msg);
+    exit_on_error ( rc, __LINE__, error_msg );
+
     sqlite3_close(db);
 
     std::cout << "All database tables created successfully!" << std::endl;
@@ -72,6 +76,7 @@ PlantDB::SpeciePropertiesHolder PlantDB::getAllPlantData()
     std::map<int, SoilHumidityProperties> soil_humidity_properties(get_all_soil_humidity_properties());
     std::map<int, SeedingProperties> seeding_properties(get_all_seeding_properties());
     std::map<int, TemperatureProperties> temperature_properties(get_all_temp_properties());
+    std::map<int, SlopeProperties> slope_properties(get_all_slope_properties());
 
     for(auto it (specie_ids.begin()); it != specie_ids.end(); it++)
     {
@@ -83,6 +88,7 @@ PlantDB::SpeciePropertiesHolder PlantDB::getAllPlantData()
         SoilHumidityProperties soil_humidity_property(soil_humidity_properties.find(id)->second);
         TemperatureProperties temperature_property(temperature_properties.find(id)->second);
         SeedingProperties seeding_property(seeding_properties.find(id)->second);
+        SlopeProperties slope_property(slope_properties.find(id)->second);
 
         SpecieProperties sp(name,
                             id,
@@ -91,7 +97,8 @@ PlantDB::SpeciePropertiesHolder PlantDB::getAllPlantData()
                             illumination_property,
                             soil_humidity_property,
                             temperature_property,
-                            seeding_property);
+                            seeding_property,
+                            slope_property);
 
         ret.emplace(id,sp);
     }
@@ -108,6 +115,7 @@ void PlantDB::insertNewPlantData(SpecieProperties & data)
     insert_soil_humidity_properties(data.specie_id, data.soil_humidity_properties);
     insert_seeding_properties(data.specie_id, data.seeding_properties);
     insert_temp_properties(data.specie_id, data.temperature_properties);
+    insert_slope_properties(data.specie_id, data.slope_properties);
 }
 
 void PlantDB::updatePlantData(const SpecieProperties & data)
@@ -119,6 +127,7 @@ void PlantDB::updatePlantData(const SpecieProperties & data)
     update_soil_humidity_properties(data.specie_id, data.soil_humidity_properties);
     update_seeding_properties(data.specie_id, data.seeding_properties);
     update_temp_properties(data.specie_id, data.temperature_properties);
+    update_slope_properties(data.specie_id, data.slope_properties);
 }
 
 void PlantDB::removePlant(int p_id)
@@ -453,6 +462,50 @@ std::map<int, TemperatureProperties> PlantDB::get_all_temp_properties()
     return ret;
 }
 
+std::map<int, SlopeProperties> PlantDB::get_all_slope_properties()
+{
+    sqlite3 * db (open_db());
+    char * error_msg = 0;
+    sqlite3_stmt * statement;
+
+    static const std::string sql = "SELECT * FROM " + slope_properties_table_name + ";";
+
+    std::map<int, SlopeProperties> ret;
+
+    // Prepare the statement
+    int rc (sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL));
+    exit_on_error(rc, __LINE__, error_msg);
+
+    while(sqlite3_step(statement) == SQLITE_ROW)
+    {
+        int id;
+        int start_of_decline;
+        int max;
+
+        for(int c (0); c < sqlite3_column_count(statement); c++)
+        {
+            if(c == column_id.index)
+                id = sqlite3_column_int(statement,c);
+            else if(c == slope_properties_table_column_start_of_decline.index)
+                start_of_decline = sqlite3_column_int(statement,c);
+            else if(c == slope_properties_table_column_max.index)
+                max = sqlite3_column_int(statement,c);
+            else
+            {
+                std::cerr << "Unknown column: " << sqlite3_column_name(statement,c) <<
+                             " in file " << __FILE__ << " and line " << __LINE__ << std::endl;
+                exit(1);
+            }
+        }
+        ret.emplace(id, SlopeProperties(start_of_decline, max));
+    }
+    // finalise the statement
+    sqlite3_finalize(statement);
+    sqlite3_close(db);
+
+    return ret;
+}
+
 /*********************
  * INSERT STATEMENTS *
  *********************/
@@ -674,6 +727,34 @@ void PlantDB::insert_temp_properties(int id, const TemperatureProperties & temp_
     sqlite3_close(db);
 }
 
+void PlantDB::insert_slope_properties(int id, const SlopeProperties & slope_properties)
+{
+    sqlite3 * db (open_db());
+    char *error_msg = 0;
+    sqlite3_stmt * statement;
+
+    static const std::string sql = "INSERT INTO " + slope_properties_table_name + " (" +
+            column_id.name + "," +
+            slope_properties_table_column_start_of_decline.name + "," +
+            slope_properties_table_column_max.name+  ")" +
+            " VALUES ( ?, ?, ?);";
+
+    // Prepare the statement
+    exit_on_error(sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL), __LINE__);
+
+    // Perform binding
+    exit_on_error(sqlite3_bind_int(statement, column_id.index+1, id), __LINE__);
+    exit_on_error(sqlite3_bind_int(statement, slope_properties_table_column_start_of_decline.index+1, slope_properties.start_of_decline), __LINE__);
+    exit_on_error(sqlite3_bind_int(statement, slope_properties_table_column_max.index+1, slope_properties.max), __LINE__);
+
+    // Commit
+    exit_on_error(sqlite3_step(statement), __LINE__);
+
+    // finalise the statement
+    sqlite3_finalize(statement);
+    sqlite3_close(db);
+}
+
 /*********************
  * UPDATE STATEMENTS *
  *********************/
@@ -878,6 +959,34 @@ void PlantDB::update_temp_properties(int id, const TemperatureProperties & temp_
     exit_on_error(sqlite3_bind_int(statement, bind_index++, temp_properties.prime_temp.second), __LINE__);
     exit_on_error(sqlite3_bind_int(statement, bind_index++, temp_properties.min_temp), __LINE__);
     exit_on_error(sqlite3_bind_int(statement, bind_index++, temp_properties.max_temp), __LINE__);
+    exit_on_error(sqlite3_bind_int(statement, bind_index++, id), __LINE__);
+
+    // Commit
+    exit_on_error(sqlite3_step(statement), __LINE__);
+
+    // finalise the statement
+    sqlite3_finalize(statement);
+    sqlite3_close(db);
+}
+
+void PlantDB::update_slope_properties(int id, const SlopeProperties & slope_properties)
+{
+    sqlite3 * db (open_db());
+    char *error_msg = 0;
+    sqlite3_stmt * statement;
+
+    static const std::string sql = "UPDATE " + slope_properties_table_name + " SET " +
+            slope_properties_table_column_start_of_decline.name + " = ?," +
+            slope_properties_table_column_max.name +  " = ?" +
+            " WHERE " + column_id.name + " = ?;";
+
+    // Prepare the statement
+    exit_on_error(sqlite3_prepare_v2(db, sql.c_str(),-1/*null-terminated*/,&statement,NULL), __LINE__);
+
+    // Perform binding
+    int bind_index (slope_properties_table_column_start_of_decline.index);
+    exit_on_error(sqlite3_bind_int(statement, bind_index++, slope_properties.start_of_decline), __LINE__);
+    exit_on_error(sqlite3_bind_int(statement, bind_index++, slope_properties.max), __LINE__);
     exit_on_error(sqlite3_bind_int(statement, bind_index++, id), __LINE__);
 
     // Commit

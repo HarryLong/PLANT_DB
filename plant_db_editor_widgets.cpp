@@ -400,6 +400,68 @@ void TemperaturePropertiesWidget::init_layout()
     setLayout(main_layout);
 }
 
+/*****************************
+ * SLOPE PROPERTIES WIDGET *
+ *****************************/
+SlopePropertiesWidget::SlopePropertiesWidget(QWidget* parent, Qt::WindowFlags f) :
+    m_start_of_decline(new QSpinBox),
+    m_max(new QSpinBox)
+{
+    m_start_of_decline->setRange(0,90);
+    m_start_of_decline->setValue(0);
+
+    m_max->setRange(0,90);
+    m_max->setValue(0);
+
+    init_layout();
+}
+
+SlopePropertiesWidget::~SlopePropertiesWidget()
+{
+
+}
+
+SlopeProperties SlopePropertiesWidget::getProperties()
+{
+    return SlopeProperties(m_start_of_decline->value(), m_max->value());
+}
+
+void SlopePropertiesWidget::setProperties(const SlopeProperties & p_properties)
+{
+    m_start_of_decline->setValue(p_properties.start_of_decline);
+    m_max->setValue(p_properties.max);
+}
+
+void SlopePropertiesWidget::clear()
+{
+    m_start_of_decline->clear();
+    m_max->clear();
+}
+
+void SlopePropertiesWidget::init_layout()
+{
+    QGridLayout * main_layout = new QGridLayout;
+
+    int row(0);
+
+    // Start of decline
+    {
+        QHBoxLayout * h_layout = new QHBoxLayout();
+        h_layout->addWidget(new QLabel("Start of decline: "),0,Qt::AlignLeft);
+        h_layout->addWidget(m_start_of_decline,0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel(" Degrees"),0,Qt::AlignRight);
+        main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
+    }
+    // Sensitivity
+    {
+        QHBoxLayout * h_layout = new QHBoxLayout();
+        h_layout->addWidget(new QLabel("Max: "),0,Qt::AlignLeft);
+        h_layout->addWidget(m_max,0,Qt::AlignRight);
+        h_layout->addWidget(new QLabel(" Degrees"),0,Qt::AlignRight);
+        main_layout->addLayout(h_layout,row++,0,1,1,Qt::AlignLeft);
+    }
+    setLayout(main_layout);
+}
 
 /*****************************
  * SEEDING PROPERTIES WIDGET *

@@ -32,6 +32,7 @@ private:
     SoilHumidityPropertiesWidget * soil_humidity_properties_widget;
     TemperaturePropertiesWidget * temp_properties_widget;
     SeedingPropertiesWidget * seeding_properties_widget;
+    SlopePropertiesWidget * slope_properties_widget;
 };
 
 enum Mode{
@@ -59,12 +60,12 @@ private:
 /*********************************
  * SPECIE PROPERTIES LIST WIDGET *
  *********************************/
-class SpeciePropertiesListWidget : public QListWidget
+class SpecieSuitabilityListWidget : public QListWidget
 {
 Q_OBJECT
 public:
-    SpeciePropertiesListWidget(QWidget * parent);
-    ~SpeciePropertiesListWidget();
+    SpecieSuitabilityListWidget(QWidget * parent);
+    ~SpecieSuitabilityListWidget();
 
 public slots:
     void filter(QString filter);
@@ -116,7 +117,7 @@ private:
 //    QString get_current_selected_specie_name();
 //    int get_current_selected_specie_id();
 
-    SpeciePropertiesListWidget * m_available_plants_list;
+    SpecieSuitabilityListWidget * m_available_plants_list;
     PlantDB m_plant_db;
 
     PropertyWidgetsWrapper * m_property_widgets_wrapper;

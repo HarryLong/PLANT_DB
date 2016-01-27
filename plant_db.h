@@ -116,6 +116,18 @@ static const std::string temperature_properties_table_creation_code =
                                                        temperature_properties_table_column_min.name + " INT NOT NULL," +
                                                        temperature_properties_table_column_max.name + ");";
 
+/********************************
+ * SLOPE PROPERTIES TABLE *
+ ********************************/
+static const std::string slope_properties_table_name = "slope_properties";
+static const Column slope_properties_table_column_start_of_decline = Column(1,"start_of_decline");
+static const Column slope_properties_table_column_max = Column(2,"max");
+static const std::string slope_properties_table_creation_code =
+                "CREATE TABLE IF NOT EXISTS " + slope_properties_table_name + "( " +
+                                                       column_id.name + " INTEGER REFERENCES " + specie_table_name + "(" + column_id.name + ") ON DELETE CASCADE," +
+                                                       slope_properties_table_column_start_of_decline.name + " INT NOT NULL," +
+                                                       slope_properties_table_column_max.name + ");";
+
 class PlantDB {
 public:
     typedef std::map<int, SpecieProperties> SpeciePropertiesHolder;
@@ -142,6 +154,7 @@ private:
     std::map<int, SoilHumidityProperties> get_all_soil_humidity_properties();
     std::map<int, SeedingProperties> get_all_seeding_properties();
     std::map<int, TemperatureProperties> get_all_temp_properties();
+    std::map<int, SlopeProperties> get_all_slope_properties();
 
     /*********************
      * INSERT STATEMENTS *
@@ -153,6 +166,7 @@ private:
     void insert_soil_humidity_properties(int id, const SoilHumidityProperties & soil_humidity_properties);
     void insert_seeding_properties(int id, const SeedingProperties & seeding_properties);
     void insert_temp_properties(int id, const TemperatureProperties & seeding_properties);
+    void insert_slope_properties(int id, const SlopeProperties & slope_properties);
 
     /*********************
      * UPDATE STATEMENTS *
@@ -164,6 +178,7 @@ private:
     void update_soil_humidity_properties(int id, const SoilHumidityProperties & soil_humidity_properties);
     void update_seeding_properties(int id, const SeedingProperties & seeding_properties);
     void update_temp_properties(int id, const TemperatureProperties & seeding_properties);
+    void update_slope_properties(int id, const SlopeProperties & slope_properties);
 
     /*********************
      * DELETE STATEMENTS *

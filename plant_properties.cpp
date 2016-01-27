@@ -144,6 +144,22 @@ SeedingProperties::SeedingProperties( int p_max_seed_distance,
 
 //---------------------------------------------------------------------------
 
+SlopeProperties::SlopeProperties(const SlopeProperties & other) :
+    start_of_decline(other.start_of_decline),
+    max(other.max){}
+
+
+SlopeProperties::SlopeProperties():
+    start_of_decline(0),
+    max(0) {}
+
+SlopeProperties::SlopeProperties( int p_start_of_decline,
+                                  int p_max) :
+    start_of_decline(p_start_of_decline),
+    max(p_max) {}
+
+//---------------------------------------------------------------------------
+
 SpecieProperties::SpecieProperties(const SpecieProperties & other) :
     specie_id(other.specie_id),
     specie_name(other.specie_name),
@@ -152,7 +168,8 @@ SpecieProperties::SpecieProperties(const SpecieProperties & other) :
     illumination_properties(other.illumination_properties),
     soil_humidity_properties(other.soil_humidity_properties),
     temperature_properties(other.temperature_properties),
-    seeding_properties(other.seeding_properties)
+    seeding_properties(other.seeding_properties),
+    slope_properties(other.slope_properties)
 {}
 
 
@@ -167,8 +184,10 @@ SpecieProperties::SpecieProperties(QString name,
                                    IlluminationProperties illumination_properties,
                                    SoilHumidityProperties soil_humidity_properties,
                                    TemperatureProperties temperature_properties,
-                                   SeedingProperties seeding_properties) :
-    SpecieProperties(name,0,ageing_properties,growth_properties,illumination_properties,soil_humidity_properties,temperature_properties,seeding_properties)
+                                   SeedingProperties seeding_properties,
+                                   SlopeProperties slope_properties) :
+    SpecieProperties(name,0,ageing_properties,growth_properties,illumination_properties,soil_humidity_properties,temperature_properties,seeding_properties,
+                     slope_properties)
 {
 
 }
@@ -179,14 +198,16 @@ SpecieProperties::SpecieProperties(QString name, int id,
                                    IlluminationProperties illumination_properties,
                                    SoilHumidityProperties soil_humidity_properties,
                                    TemperatureProperties temperature_properties,
-                                   SeedingProperties seeding_properties) :
+                                   SeedingProperties seeding_properties,
+                                   SlopeProperties slope_properties) :
     specie_id(id), specie_name(name),
     ageing_properties(ageing_properties),
     growth_properties(growth_properties),
     illumination_properties(illumination_properties),
     soil_humidity_properties(soil_humidity_properties),
     temperature_properties(temperature_properties),
-    seeding_properties(seeding_properties)
+    seeding_properties(seeding_properties),
+    slope_properties(slope_properties)
 {}
 
 //SpecieProperties::SpecieProperties & operator=(const SpecieProperties & other)

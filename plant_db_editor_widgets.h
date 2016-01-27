@@ -258,6 +258,28 @@ private:
 };
 
 /*****************************
+ * SLOPE PROPERTIES WIDGET *
+ *****************************/
+class SlopePropertiesWidget : public QWidget
+{
+public:
+    SlopePropertiesWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    ~SlopePropertiesWidget();
+
+    SlopeProperties getProperties();
+
+    void setProperties(const SlopeProperties & p_properties);
+    void clear();
+
+private:
+    void init_layout();
+
+    // UI Elements
+    QSpinBox* m_start_of_decline;
+    QSpinBox* m_max;
+};
+
+/*****************************
  * SEEDING PROPERTIES WIDGET *
  *****************************/
 class SeedingPropertiesWidget : public QWidget
