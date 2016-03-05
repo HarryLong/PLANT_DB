@@ -13,4 +13,4 @@
 Configuration file gets installed in: /usr/local/etc/plantdb.conf. Modify the content of this file to specify the location in which the plant database is stored (default: ~/.plantdb)
 
 ## Run:
-execute **PlantDB_Editor** on command line
+Acts as a library for other applications although a GUI is available to edit/view the db content: execute **PlantDB_Editor** on command line. 
