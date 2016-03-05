@@ -1,9 +1,16 @@
 # PLANT_DB
 
-# Requirements
-- SQlite3
-- Qt
+## Dependencies:
+* SQlite3
+* Qt5.5
+* c++11
 
-# Installation
-make
-make install 
+## Installation:
+- cmake CMakeLists.txt
+- sudo make install
+
+## Configuration:
+Configuration file gets installed in: /usr/local/etc/plantdb.conf. Modify the content of this file to specify the location in which the plant database is stored (default: ~/.plantdb)
+
+## Run:
+execute **PlantDB_Editor** on command line
